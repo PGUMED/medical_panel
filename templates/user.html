@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Drill-Down Data Table</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* General Layout */
+        body { background-color: #f4f6f9; }
+        
+        /* Table Styling */
+        .table-container {
+            overflow-x: auto; /* Allow horizontal scroll */
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        th, td {
+            white-space: nowrap; /* Prevent vertical wrapping */
+            vertical-align: middle;
+            padding: 12px 15px;
+        }
+
+        /* Expandable Header Styling */
+        th.expandable {
+            cursor: pointer;
+            background-color: #e3f2fd; /* Light Blue */
+            color: #0d6efd;
+            border-bottom: 3px solid #0d6efd;
+            position: relative;
+        }
+        
+        th.expandable:hover {
+            background-color: #d1e7dd;
+            color: #0f5132;
+            border-bottom-color: #0f5132;
+        }
+
+        th.leaf {
+            background-color: #f8f9fa; /* Light Grey */
+            color: #495057;
+        }
+
+        /* The plus icon */
+        .expand-icon {
+            font-size: 0.8em;
+            margin-left: 8px;
+            font-weight: bold;
+            background: rgba(255,255,255,0.5);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid mt-4 px-4">
+    <div class="d-flex justify-content-between mb-3">
+        <h3>Dynamic Drill-Down Table</h3>
+        <button class="btn btn-outline-secondary btn-sm" onclick="resetTable()">Reset View</button>
+    </div>
+
+    <div class="table-container">
+        <table class="table table-bordered mb-0" id="dynamicTable">
+            <thead>
+                </thead>
+            <tbody>
+                </tbody>
+        </table>
+    </div>
+    
+    <p class="text-muted mt-2 small">
+        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary">Blue Headers</span> 
+        contain nested data. Click them to expand into columns.
+    </p>
+</div>
+
+<script>
+    // 1. Pass data from Python to JS
+    const rawData = {{ data | tojson }};
+    
+    // 2. State: Tracks which columns are currently shown
+    // Initially, we only show the top-level keys
+    let visibleColumns = [];
+
+    // Helper: Get value from nested object using dot notation "Sys.Propulsion.Engine"
+    function getValue(obj, path) {
+        return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+    }
+
+    // Initialize
+    function init() {
+        if (rawData.length > 0) {
+            visibleColumns = Object.keys(rawData[0]);
+        }
+        renderTable();
+    }
+
+    function resetTable() {
+        init();
+    }
+
+    // 3. CORE LOGIC: Expand a column
+    function expandColumn(colName) {
+        // Find the index of the column we clicked
+        const index = visibleColumns.indexOf(colName);
+        if (index === -1) return;
+
+        // We need to find all unique keys that exist under this column object
+        let newKeys = new Set();
+        
+        rawData.forEach(row => {
+            let val = getValue(row, colName);
+            if (val && typeof val === 'object' && val !== null) {
+                Object.keys(val).forEach(childKey => {
+                    newKeys.add(colName + "." + childKey);
+                });
+            }
+        });
+
+        const childColumns = Array.from(newKeys).sort();
+
+        if (childColumns.length > 0) {
+            // Remove the parent column, Insert the children columns
+            visibleColumns.splice(index, 1, ...childColumns);
+            renderTable();
+        } else {
+            alert("No further details found inside " + colName);
+        }
+    }
+
+    // 4. Render Logic
+    function renderTable() {
+        const thead = document.querySelector('#dynamicTable thead');
+        const tbody = document.querySelector('#dynamicTable tbody');
+        
+        // --- Build Headers ---
+        let headerHTML = '<tr>';
+        
+        visibleColumns.forEach(col => {
+            // Check if this column is expandable (i.e., holds an object in the data)
+            let isExpandable = false;
+            for(let row of rawData) {
+                let val = getValue(row, col);
+                if (val && typeof val === 'object' && val !== null) {
+                    isExpandable = true;
+                    break;
+                }
+            }
+
+            if (isExpandable) {
+                // Add click handler for expansion
+                headerHTML += `<th class="expandable" onclick="expandColumn('${col}')">
+                                ${col} <span class="expand-icon">+</span>
+                               </th>`;
+            } else {
+                headerHTML += `<th class="leaf">${col}</th>`;
+            }
+        });
+        headerHTML += '</tr>';
+        thead.innerHTML = headerHTML;
+
+        // --- Build Rows ---
+        let bodyHTML = '';
+        rawData.forEach(row => {
+            bodyHTML += '<tr>';
+            visibleColumns.forEach(col => {
+                let val = getValue(row, col);
+                
+                // If the value is [Object object], we show a summary or "..."
+                if (val && typeof val === 'object' && val !== null) {
+                   // Count how many keys are inside
+                   let count = Object.keys(val).length;
+                   bodyHTML += `<td class="text-muted fst-italic small">
+                                    { Nested Data: ${count} items }
+                                </td>`;
+                } else if (val === undefined || val === null) {
+                    bodyHTML += '<td>-</td>';
+                } else {
+                    bodyHTML += `<td>${val}</td>`;
+                }
+            });
+            bodyHTML += '</tr>';
+        });
+        tbody.innerHTML = bodyHTML;
+    }
+
+    // Start
+    init();
+
+</script>
+</body>
+</html>
