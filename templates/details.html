@@ -9,13 +9,9 @@
         .btn-action { padding: 0px 6px; font-size: 0.7rem; }
         .table-responsive { max-height: 80vh; }
         thead th { position: sticky; top: 0; z-index: 1; }
-        td {
-            vertical-align: middle;
-            white-space: nowrap;
-            max-width: 300px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+        th a { color: white; text-decoration: none; display: block; width: 100%; }
+        th a:hover { color: #ddd; }
+        td { vertical-align: middle; white-space: nowrap; max-width: 300px; overflow: hidden; text-overflow: ellipsis; }
         td:hover { white-space: normal; overflow: visible; }
     </style>
 </head>
@@ -28,73 +24,65 @@
             <a href="{{ url_for('index') }}" class="btn btn-outline-secondary" title="Main Dashboard">
                 <i class="bi bi-house-door-fill"></i> Dashboard
             </a>
-
             {% if parent_path is not none %}
-                <a href="{{ url_for('view_details', doc_id=row_id, col_path=parent_path) }}"
-                   class="btn btn-outline-dark fw-bold">
-                    &larr; Up Level
-                </a>
+                <a href="{{ url_for('view_details', doc_id=row_id, col_path=parent_path) }}" class="btn btn-outline-dark fw-bold">&larr; Up Level</a>
             {% elif current_path %}
-                <a href="{{ url_for('view_details', doc_id=row_id) }}" class="btn btn-outline-dark fw-bold">
-                    &larr; Root
-                </a>
+                <a href="{{ url_for('view_details', doc_id=row_id) }}" class="btn btn-outline-dark fw-bold">&larr; Root</a>
             {% endif %}
         </div>
 
         <div class="d-flex align-items-center">
-
             <div class="btn-group me-2">
-                <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
                     <i class="bi bi-download"></i> Export View
                 </button>
                 <ul class="dropdown-menu">
-                    <li>
-                        <a class="dropdown-item"
-                           href="{{ url_for('export_data', doc_id=row_id, col_path=current_path, format='csv') }}">
-                           As CSV
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item"
-                           href="{{ url_for('export_data', doc_id=row_id, col_path=current_path, format='json') }}">
-                           As JSON
-                        </a>
-                    </li>
+                    <li><a class="dropdown-item" href="{{ url_for('export_data', doc_id=row_id, col_path=current_path, format='csv', **request.args) }}">As CSV</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('export_data', doc_id=row_id, col_path=current_path, format='json', **request.args) }}">As JSON</a></li>
                 </ul>
             </div>
 
             {% if session.get('role') == 'admin' and (data | is_list or data | is_dict) %}
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#universalAddModal">
-                <i class="bi bi-plus-lg"></i> Add Data
-            </button>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#universalAddModal" {{ 'disabled' if is_filtered else '' }}>
+                    <i class="bi bi-plus-lg"></i> Add Data
+                </button>
             {% endif %}
         </div>
     </div>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-          </div>
-        {% endfor %}
-      {% endif %}
+      {% if messages %}{% for category, message in messages %}<div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endfor %}{% endif %}
     {% endwith %}
+
+    {% if data | is_list or data | is_dict %}
+    <div class="card mb-3 border-0 shadow-sm">
+        <div class="card-body p-2 bg-white rounded">
+            <form action="{{ url_for('view_details', doc_id=row_id, col_path=current_path) }}" method="GET" class="row g-2 align-items-center">
+                <div class="col-auto"><span class="fw-bold text-secondary small"><i class="bi bi-funnel-fill"></i> Filter:</span></div>
+                {% if data | is_list_of_dicts %}
+                <div class="col-auto">
+                    <select name="filter_key" class="form-select form-select-sm">
+                        <option value="" {{ 'selected' if not current_filter_key else '' }}>Any Column</option>
+                        {% set all_keys = [] %}
+                        {% for item in data %}{% for k in item.keys() %}{% if k not in all_keys %}{% set _ = all_keys.append(k) %}{% endif %}{% endfor %}{% endfor %}
+                        {% for k in all_keys %}<option value="{{ k }}" {{ 'selected' if current_filter_key == k else '' }}>{{ k }}</option>{% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+                <div class="col-auto"><input type="text" name="filter_val" class="form-control form-control-sm" placeholder="Search..." value="{{ current_filter_val if current_filter_val else '' }}"></div>
+                <div class="col-auto"><button type="submit" class="btn btn-sm btn-primary">Go</button>{% if current_filter_val or current_sort_by %}<a href="{{ url_for('view_details', doc_id=row_id, col_path=current_path) }}" class="btn btn-sm btn-outline-secondary">Clear</a>{% endif %}</div>
+                {% if is_filtered %}<div class="col-auto ms-auto text-danger small fw-bold"><i class="bi bi-exclamation-triangle"></i> Editing disabled while filtered</div>{% endif %}
+            </form>
+        </div>
+    </div>
+    {% endif %}
 
     <div class="card shadow-sm border-0">
         <div class="card-header bg-primary text-white p-3">
-            <div class="d-flex justify-content-between align-items-center">
-                <h4 class="m-0">{{ title }}</h4>
-                <span class="badge bg-light text-primary">{{ row_id }}</span>
-            </div>
-            <small class="opacity-75 d-block mt-1" style="font-family: monospace;">
-                PATH: ROOT{% if current_path %} > {{ current_path.replace('.', ' > ') }}{% endif %}
-            </small>
+            <div class="d-flex justify-content-between align-items-center"><h4 class="m-0">{{ title }}</h4><span class="badge bg-light text-primary">{{ row_id }}</span></div>
+            <small class="opacity-75 d-block mt-1" style="font-family: monospace;">PATH: ROOT{% if current_path %} > {{ current_path.replace('.', ' > ') }}{% endif %}</small>
         </div>
-
         <div class="card-body p-0">
-
             {% if data | is_list_of_dicts %}
                 <div class="table-responsive">
                     <table class="table table-striped table-hover mb-0">
@@ -102,14 +90,15 @@
                             <tr>
                                 <th style="width: 50px;">#</th>
                                 {% set all_keys = [] %}
-                                {% for item in data %}
-                                    {% for k in item.keys() %}
-                                        {% if k not in all_keys %}{% set _ = all_keys.append(k) %}{% endif %}
-                                    {% endfor %}
+                                {% for item in data %}{% for k in item.keys() %}{% if k not in all_keys %}{% set _ = all_keys.append(k) %}{% endif %}{% endfor %}{% endfor %}
+                                {% for key in all_keys %}
+                                <th>
+                                    {% set new_order = 'desc' if (current_sort_by == key and current_sort_order == 'asc') else 'asc' %}
+                                    <a href="{{ url_for('view_details', doc_id=row_id, col_path=current_path, sort_by=key, sort_order=new_order, filter_key=current_filter_key, filter_val=current_filter_val) }}">
+                                        {{ key }} {% if current_sort_by == key %}<i class="bi bi-caret-{{ 'up' if current_sort_order == 'asc' else 'down' }}-fill float-end"></i>{% endif %}
+                                    </a>
+                                </th>
                                 {% endfor %}
-
-                                {% for key in all_keys %}<th>{{ key }}</th>{% endfor %}
-
                                 {% if session.get('role') == 'admin' %}<th>Action</th>{% endif %}
                             </tr>
                         </thead>
@@ -118,92 +107,27 @@
                             <tr>
                                 <td class="text-muted">{{ loop.index }}</td>
                                 {% for key in all_keys %}
-                                    <td>
-                                        {% if key in item %}
-                                            {% set val = item[key] %}
-                                            {% if val | is_dict or val | is_list %}
-                                                <a href="{{ url_for('view_details', doc_id=row_id, col_path=current_path + '.' + loop.index0|string + '.' + key) }}"
-                                                   class="btn btn-sm btn-outline-primary py-0" style="font-size: 0.8rem;">
-                                                    Open
-                                                </a>
-                                            {% else %}
-                                                {{ val }}
-                                            {% endif %}
-                                        {% else %}
-                                            <span class="text-muted small">-</span>
-                                        {% endif %}
-                                    </td>
+                                    <td>{% if key in item %}{% set val = item[key] %}{% if val | is_dict or val | is_list %}<a href="{{ url_for('view_details', doc_id=row_id, col_path=current_path + '.' + loop.index0|string + '.' + key) }}" class="btn btn-sm btn-outline-primary py-0" style="font-size: 0.8rem;">Open</a>{% else %}{{ val }}{% endif %}{% else %}<span class="text-muted small">-</span>{% endif %}</td>
                                 {% endfor %}
-
                                 {% if session.get('role') == 'admin' %}
-                                <td>
-                                    <form action="{{ url_for('delete_nested', doc_id=row_id, col_path=current_path, key_or_index=loop.index0) }}" method="POST" onsubmit="return confirm('Delete this row?');">
-                                        <button class="btn btn-danger btn-action"><i class="bi bi-trash"></i></button>
-                                    </form>
-                                </td>
+                                <td>{% if not is_filtered %}<form action="{{ url_for('delete_nested', doc_id=row_id, col_path=current_path, key_or_index=loop.index0) }}" method="POST" onsubmit="return confirm('Delete this row?');"><button class="btn btn-danger btn-action"><i class="bi bi-trash"></i></button></form>{% else %}<button class="btn btn-secondary btn-action" disabled><i class="bi bi-lock"></i></button>{% endif %}</td>
                                 {% endif %}
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
-
             {% elif data | is_dict %}
                 <div class="table-responsive">
                     <table class="table table-hover mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th style="width: 30%;">Key</th>
-                                <th>Value</th>
-                                {% if session.get('role') == 'admin' %}<th>Action</th>{% endif %}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for key, val in data.items() %}
-                            {% if key != '_id' %} <tr>
-                                <td class="fw-bold text-secondary font-monospace">{{ key }}</td>
-                                <td>
-                                    {% if val | is_dict or val | is_list %}
-                                        <a href="{{ url_for('view_details', doc_id=row_id, col_path=(current_path + '.' + key) if current_path else key) }}"
-                                           class="btn btn-primary btn-sm btn-view">
-                                            Open Folder &rarr;
-                                        </a>
-                                    {% else %}
-                                        {{ val }}
-                                    {% endif %}
-                                </td>
-                                {% if session.get('role') == 'admin' %}
-                                <td style="width:50px;">
-                                    <form action="{{ url_for('delete_nested', doc_id=row_id, col_path=current_path, key_or_index=key) }}" method="POST" onsubmit="return confirm('Delete this key?');">
-                                        <button class="btn btn-danger btn-action"><i class="bi bi-trash"></i></button>
-                                    </form>
-                                </td>
-                                {% endif %}
-                            </tr>
-                            {% endif %}
-                            {% endfor %}
-                        </tbody>
+                        <thead class="table-light"><tr><th style="width: 30%;">Key</th><th>Value</th>{% if session.get('role') == 'admin' %}<th>Action</th>{% endif %}</tr></thead>
+                        <tbody>{% for key, val in data.items() %}{% if key != '_id' %}<tr><td class="fw-bold text-secondary font-monospace">{{ key }}</td><td>{% if val | is_dict or val | is_list %}<a href="{{ url_for('view_details', doc_id=row_id, col_path=(current_path + '.' + key) if current_path else key) }}" class="btn btn-primary btn-sm btn-view">Open Folder &rarr;</a>{% else %}{{ val }}{% endif %}</td>{% if session.get('role') == 'admin' %}<td style="width:50px;">{% if not is_filtered %}<form action="{{ url_for('delete_nested', doc_id=row_id, col_path=current_path, key_or_index=key) }}" method="POST" onsubmit="return confirm('Delete this key?');"><button class="btn btn-danger btn-action"><i class="bi bi-trash"></i></button></form>{% endif %}</td>{% endif %}</tr>{% endif %}{% endfor %}</tbody>
                     </table>
                 </div>
-
             {% elif data | is_list %}
-                <ul class="list-group list-group-flush">
-                {% for item in data %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        {{ item }}
-                        {% if session.get('role') == 'admin' %}
-                        <form action="{{ url_for('delete_nested', doc_id=row_id, col_path=current_path, key_or_index=loop.index0) }}" method="POST">
-                            <button class="btn btn-danger btn-action"><i class="bi bi-x-lg"></i></button>
-                        </form>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-                </ul>
-
+                <ul class="list-group list-group-flush">{% for item in data %}<li class="list-group-item d-flex justify-content-between align-items-center">{{ item }}{% if session.get('role') == 'admin' %}{% if not is_filtered %}<form action="{{ url_for('delete_nested', doc_id=row_id, col_path=current_path, key_or_index=loop.index0) }}" method="POST"><button class="btn btn-danger btn-action"><i class="bi bi-x-lg"></i></button></form>{% endif %}{% endif %}</li>{% endfor %}</ul>
             {% else %}
-                <div class="p-4 bg-white">
-                    <pre class="m-0 fs-5">{{ data }}</pre>
-                </div>
+                <div class="p-4 bg-white"><pre class="m-0 fs-5">{{ data }}</pre></div>
             {% endif %}
         </div>
     </div>
@@ -221,57 +145,58 @@
       <div class="modal-body">
 
           {% if data | is_list_of_dicts %}
-             <p class="fw-bold mb-3">Add new record to this list:</p>
-             <div class="row g-2">
-             {% if data|length > 0 %}
-                 {% set modal_keys = [] %}
-                 {% for item in data %}
-                    {% for k in item.keys() %}
-                        {% if k not in modal_keys %}{% set _ = modal_keys.append(k) %}{% endif %}
-                    {% endfor %}
-                 {% endfor %}
+             <ul class="nav nav-tabs mb-3" id="addTabs" role="tablist">
+                 <li class="nav-item"><a class="nav-link active" id="row-tab" data-bs-toggle="tab" href="#addRow" role="tab">Add New Row</a></li>
+                 <li class="nav-item"><a class="nav-link" id="col-tab" data-bs-toggle="tab" href="#addCol" role="tab">Add New Column</a></li>
+             </ul>
 
-                 {% for k in modal_keys %}
-                 <div class="col-12">
-                     <label class="small fw-bold text-muted">{{ k }}</label>
-                     <input type="text" name="{{ k }}" class="form-control form-control-sm" placeholder="Value for {{ k }}">
+             <div class="tab-content">
+                 <div class="tab-pane fade show active" id="addRow" role="tabpanel">
+                     <p class="small text-muted">Add a new record to this list.</p>
+                     <input type="hidden" name="add_mode" value="add_row" id="addModeInput">
+                     <div class="row g-2">
+                     {% set modal_keys = [] %}
+                     {% for item in data %}{% for k in item.keys() %}{% if k not in modal_keys %}{% set _ = modal_keys.append(k) %}{% endif %}{% endfor %}{% endfor %}
+                     {% for k in modal_keys %}
+                     <div class="col-12"><label class="small fw-bold text-muted">{{ k }}</label><input type="text" name="{{ k }}" class="form-control form-control-sm"></div>
+                     {% endfor %}
+                     </div>
                  </div>
-                 {% endfor %}
-             {% else %}
-                 <p class="text-warning">List is empty. Cannot infer columns. Add using backend console or raw insert first.</p>
-             {% endif %}
+
+                 <div class="tab-pane fade" id="addCol" role="tabpanel">
+                     <p class="small text-muted">Add a new field to <strong>every row</strong> in this list.</p>
+                     <div class="mb-3">
+                         <label class="form-label fw-bold">New Column Name</label>
+                         <input type="text" name="new_col_name" class="form-control">
+                     </div>
+                     <div class="mb-3">
+                         <label class="form-label fw-bold">Default Value</label>
+                         <input type="text" name="default_value" class="form-control" placeholder="e.g. N/A">
+                     </div>
+                 </div>
              </div>
 
+             <script>
+                 document.addEventListener("DOMContentLoaded", function(){
+                    const rowTab = document.getElementById('row-tab');
+                    const colTab = document.getElementById('col-tab');
+                    const hiddenInput = document.getElementById('addModeInput');
+
+                    rowTab.addEventListener('click', () => hiddenInput.value = 'add_row');
+                    colTab.addEventListener('click', () => hiddenInput.value = 'add_column');
+                 });
+             </script>
+
           {% elif data | is_dict %}
-              <div class="mb-3">
-                  <label class="form-label fw-bold">New Key Name</label>
-                  <input type="text" name="new_key_name" class="form-control" placeholder="e.g. status" required>
-              </div>
-
-              <div class="mb-3">
-                  <label class="form-label fw-bold">Data Type</label>
-                  <select name="val_type" class="form-select" id="valTypeSelector" onchange="toggleValueInput()">
-                      <option value="string">Simple Text / Number</option>
-                      <option value="json_object">New Folder (Nested Object)</option>
-                  </select>
-              </div>
-
-              <div class="mb-3" id="valueInputGroup">
-                  <label class="form-label fw-bold">Value</label>
-                  <input type="text" name="new_key_value" class="form-control" placeholder="e.g. Active">
-              </div>
+              <div class="mb-3"><label class="form-label fw-bold">New Key Name</label><input type="text" name="new_key_name" class="form-control" required></div>
+              <div class="mb-3"><label class="form-label fw-bold">Data Type</label><select name="val_type" class="form-select" id="valTypeSelector" onchange="toggleValueInput()"><option value="string">Simple Text / Number</option><option value="json_object">New Folder (Nested Object)</option></select></div>
+              <div class="mb-3" id="valueInputGroup"><label class="form-label fw-bold">Value</label><input type="text" name="new_key_value" class="form-control"></div>
 
           {% elif data | is_list %}
-              <div class="mb-3">
-                  <label class="form-label fw-bold">New Item Value</label>
-                  <input type="text" name="new_list_item" class="form-control" placeholder="Value">
-              </div>
+              <div class="mb-3"><label class="form-label fw-bold">New Item Value</label><input type="text" name="new_list_item" class="form-control" placeholder="Value"></div>
           {% endif %}
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-success">Save</button>
-      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button><button type="submit" class="btn btn-success">Save</button></div>
       </form>
     </div>
   </div>
@@ -281,14 +206,9 @@
     function toggleValueInput() {
         const type = document.getElementById('valTypeSelector').value;
         const inputGroup = document.getElementById('valueInputGroup');
-        if (type === 'json_object') {
-            inputGroup.style.display = 'none';
-        } else {
-            inputGroup.style.display = 'block';
-        }
+        if (type === 'json_object') inputGroup.style.display = 'none'; else inputGroup.style.display = 'block';
     }
 </script>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
