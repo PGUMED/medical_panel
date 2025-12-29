@@ -4,6 +4,6 @@ WORKDIR /app
 
 RUN pip install --no-cache-dir pymongo
 
-COPY init_db.py .
+COPY . .
 
 CMD ["python", "init_db.py"]

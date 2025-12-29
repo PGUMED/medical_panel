@@ -7,12 +7,29 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from pymongo import MongoClient, ASCENDING, DESCENDING
 from bson.objectid import ObjectId
 
-app = Flask(__name__)
-app.secret_key = 'med_key_123'
+from json_utils import (
+    get_nested_value,
+    get_parent_path,
+    flatten_obj,
+    unflatten_dict
+)
 
-client = MongoClient('mongodb://localhost:27017/')
-db = client['hospital_db']
-collection = db['records']
+app = Flask(__name__)
+SECRET_KEY = os.getenv("SECRET_KEY", "med_key_123")
+
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
+MONGO_DB = os.getenv("MONGO_DB", "hospital_db")
+MONGO_COLLECTION = os.getenv("MONGO_COLLECTION", "records")
+
+# ---- FLASK ----
+
+app.secret_key = SECRET_KEY
+
+# ---- MONGO ----
+
+client = MongoClient(MONGO_URI)
+db = client[MONGO_DB]
+collection = db[MONGO_COLLECTION]
 
 USERS = {
     "admin": {"password": "123", "role": "admin"},
@@ -31,73 +48,6 @@ def get_data(query=None, sort_by=None, sort_order=ASCENDING):
         doc['_id'] = str(doc['_id'])
         data.append(doc)
     return data
-
-
-def get_nested_value(data, path):
-    if not path: return data
-    keys = path.split('.')
-    current = data
-    for key in keys:
-        if isinstance(current, dict) and key in current:
-            current = current[key]
-        elif isinstance(current, list):
-            try:
-                k = int(key)
-                if 0 <= k < len(current):
-                    current = current[k]
-                else:
-                    return None
-            except (ValueError, IndexError):
-                return None
-        else:
-            return None
-    return current
-
-
-def get_parent_path(path):
-    if '.' in path:
-        return path.rsplit('.', 1)[0]
-    return None
-
-
-def flatten_obj(d, parent_key='', sep='.'):
-    items = []
-    if isinstance(d, dict):
-        for k, v in d.items():
-            new_key = f"{parent_key}{sep}{k}" if parent_key else k
-            items.extend(flatten_obj(v, new_key, sep=sep).items())
-    elif isinstance(d, list):
-        for i, v in enumerate(d):
-            new_key = f"{parent_key}{sep}{i}" if parent_key else str(i)
-            items.extend(flatten_obj(v, new_key, sep=sep).items())
-    else:
-        items.append((parent_key, d))
-    return dict(items)
-
-
-def unflatten_dict(d):
-    result = {}
-    for key, value in d.items():
-        if value is None or value == "": continue
-        if isinstance(value, str):
-            value_stripped = value.strip()
-            if (value_stripped.startswith('{') and value_stripped.endswith('}')) or \
-                    (value_stripped.startswith('[') and value_stripped.endswith(']')):
-                try:
-                    value = json.loads(value_stripped.replace("'", '"'))
-                except (json.JSONDecodeError, ValueError):
-                    try:
-                        value = ast.literal_eval(value_stripped)
-                    except (ValueError, SyntaxError):
-                        pass
-        parts = key.split('.')
-        d_curr = result
-        for part in parts[:-1]:
-            if part not in d_curr: d_curr[part] = {}
-            if not isinstance(d_curr[part], dict): d_curr[part] = {}
-            d_curr = d_curr[part]
-        d_curr[parts[-1]] = value
-    return result
 
 
 # --- TEMPLATE FILTERS ---

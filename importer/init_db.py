@@ -2,10 +2,10 @@ import json
 import os
 from pymongo import MongoClient
 
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://mongo:27017/")
-DB_NAME = "hospital_db"
+MONGO_URI = os.getenv("MONGO_URI", "http://localhost:27017/")
+DB_NAME = os.getenv("HOSPITAL_DB", "hospital_db")
 COLLECTION_NAME = "records"
-DATA_FILE = "../data.json"
+DATA_FILE = "data.json"
 
 client = MongoClient(MONGO_URI)
 db = client[DB_NAME]
