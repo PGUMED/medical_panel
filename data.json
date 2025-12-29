@@ -190,6 +190,579 @@
             "nowa ze szczegolami": {}
         }
     },
+  {
+        "Stay_ID": 7279928,
+        "Patient_Status": "Discharged",
+        "Medical_Record": {
+            "Surgical_Interventions": {
+                "Major_Surgeries": [
+                    {
+                        "id": 47184106,
+                        "icd": {
+                            "id": 32662,
+                            "code": "68.61",
+                            "name": "Zmodyfikowane radykalne wycięcie macicy"
+                        }
+                    },
+                    {
+                        "id": 47183640,
+                        "icd": {
+                            "id": 32662,
+                            "code": "68.61",
+                            "name": "Zmodyfikowane radykalne wycięcie macicy"
+                        }
+                    },
+                    {
+                        "id": 1,
+                        "icd": {
+                            "id": "DAS",
+                            "code": "ADASDDAS",
+                            "name": "ADASD"
+                        }
+                    }
+                ]
+            },
+            "Diagnostics": {
+                "Pathology_Reports": [
+                    {
+                        "id": 47449454,
+                        "icd": {
+                            "id": 37299,
+                            "code": "Y90",
+                            "name": "Badanie histopatologiczne"
+                        }
+                    },
+                    {
+                        "id": 47449455,
+                        "icd": {
+                            "id": 37299,
+                            "code": "Y90",
+                            "name": "Badanie histopatologiczne"
+                        }
+                    },
+                    {
+                        "id": 47180705,
+                        "icd": {
+                            "id": 37299,
+                            "code": "Y90",
+                            "name": "Badanie histopatologiczne"
+                        }
+                    }
+                ],
+                "Imaging": {
+                    "X_Ray": [
+                        {
+                            "id": 47183648,
+                            "icd": {
+                                "id": 36275,
+                                "code": "87.440",
+                                "name": "RTG klatki piersiowej"
+                            }
+                        },
+                        {
+                            "id": 47144306,
+                            "icd": {
+                                "id": 36275,
+                                "code": "87.440",
+                                "name": "RTG klatki piersiowej"
+                            }
+                        }
+                    ]
+                },
+                "Laboratory_Tests": {
+                    "Hematology": [
+                        {
+                            "id": 47164548,
+                            "icd": {
+                                "id": 36390,
+                                "code": "C55",
+                                "name": "Morfologia krwi, z pełnym różnicowaniem granulocytów"
+                            }
+                        },
+                        {
+                            "id": 47205222,
+                            "icd": {
+                                "id": 36390,
+                                "code": "C55",
+                                "name": "Morfologia krwi, z pełnym różnicowaniem granulocytów"
+                            }
+                        },
+                        {
+                            "id": 47187736,
+                            "icd": {
+                                "id": 36390,
+                                "code": "C55",
+                                "name": "Morfologia krwi, z pełnym różnicowaniem granulocytów"
+                            }
+                        },
+                        {
+                            "id": 47183644,
+                            "icd": {
+                                "id": 36390,
+                                "code": "C55",
+                                "name": "Morfologia krwi, z pełnym różnicowaniem granulocytów"
+                            }
+                        },
+                        {
+                            "id": 47105777,
+                            "icd": {
+                                "id": 36390,
+                                "code": "C55",
+                                "name": "Morfologia krwi, z pełnym różnicowaniem granulocytów"
+                            }
+                        }
+                    ],
+                    "Biochemistry": [
+                        {
+                            "id": 47144152,
+                            "icd": {
+                                "id": 36718,
+                                "code": "M37",
+                                "name": "Kreatynina"
+                            }
+                        },
+                        {
+                            "id": 47144153,
+                            "icd": {
+                                "id": 36756,
+                                "code": "N13",
+                                "name": "Mocznik"
+                            }
+                        },
+                        {
+                            "id": 47105780,
+                            "icd": {
+                                "id": 36718,
+                                "code": "M37",
+                                "name": "Kreatynina"
+                            }
+                        },
+                        {
+                            "id": 47105779,
+                            "icd": {
+                                "id": 36584,
+                                "code": "I81",
+                                "name": "Białko C-reaktywne (CRP)"
+                            }
+                        }
+                    ],
+                    "Coagulation": [
+                        {
+                            "id": 47105782,
+                            "icd": {
+                                "id": 36502,
+                                "code": "G11",
+                                "name": "Czas częściowej tromboplastyny po aktywacji (APTT)"
+                            }
+                        },
+                        {
+                            "id": 47105783,
+                            "icd": {
+                                "id": 36487,
+                                "code": "G21",
+                                "name": "Czas protrombinowy (PT)"
+                            }
+                        }
+                    ],
+                    "Virology": [
+                        {
+                            "id": 47105786,
+                            "icd": {
+                                "id": 37147,
+                                "code": "V39",
+                                "name": "Wirus zapalenia wątroby typu B HBs Antygen"
+                            }
+                        }
+                    ]
+                }
+            },
+            "new diagnoza": "text",
+            "next level": {},
+            "nowa ze szczegolami": {}
+        }
+    },
+  {
+        "Stay_ID": 33,
+        "Patient_Status": "Discharged",
+        "Medical_Record": {
+            "Surgical_Interventions": {
+                "Major_Surgeries": [
+                    {
+                        "id": 47184106,
+                        "icd": {
+                            "id": 32662,
+                            "code": "68.61",
+                            "name": "Zmodyfikowane radykalne wycięcie macicy"
+                        }
+                    },
+                    {
+                        "id": 47183640,
+                        "icd": {
+                            "id": 32662,
+                            "code": "68.61",
+                            "name": "Zmodyfikowane radykalne wycięcie macicy"
+                        }
+                    },
+                    {
+                        "id": 1,
+                        "icd": {
+                            "id": "DAS",
+                            "code": "ADASDDAS",
+                            "name": "ADASD"
+                        }
+                    }
+                ]
+            },
+            "Diagnostics": {
+                "Pathology_Reports": [
+                    {
+                        "id": 47449454,
+                        "icd": {
+                            "id": 37299,
+                            "code": "Y90",
+                            "name": "Badanie histopatologiczne"
+                        }
+                    },
+                    {
+                        "id": 47449455,
+                        "icd": {
+                            "id": 37299,
+                            "code": "Y90",
+                            "name": "Badanie histopatologiczne"
+                        }
+                    },
+                    {
+                        "id": 47180705,
+                        "icd": {
+                            "id": 37299,
+                            "code": "Y90",
+                            "name": "Badanie histopatologiczne"
+                        }
+                    }
+                ],
+                "Imaging": {
+                    "X_Ray": [
+                        {
+                            "id": 47183648,
+                            "icd": {
+                                "id": 36275,
+                                "code": "87.440",
+                                "name": "RTG klatki piersiowej"
+                            }
+                        },
+                        {
+                            "id": 47144306,
+                            "icd": {
+                                "id": 36275,
+                                "code": "87.440",
+                                "name": "RTG klatki piersiowej"
+                            }
+                        }
+                    ]
+                },
+                "Laboratory_Tests": {
+                    "Hematology": [
+                        {
+                            "id": 47164548,
+                            "icd": {
+                                "id": 36390,
+                                "code": "C55",
+                                "name": "Morfologia krwi, z pełnym różnicowaniem granulocytów"
+                            }
+                        },
+                        {
+                            "id": 47205222,
+                            "icd": {
+                                "id": 36390,
+                                "code": "C55",
+                                "name": "Morfologia krwi, z pełnym różnicowaniem granulocytów"
+                            }
+                        },
+                        {
+                            "id": 47187736,
+                            "icd": {
+                                "id": 36390,
+                                "code": "C55",
+                                "name": "Morfologia krwi, z pełnym różnicowaniem granulocytów"
+                            }
+                        },
+                        {
+                            "id": 47183644,
+                            "icd": {
+                                "id": 36390,
+                                "code": "C55",
+                                "name": "Morfologia krwi, z pełnym różnicowaniem granulocytów"
+                            }
+                        },
+                        {
+                            "id": 47105777,
+                            "icd": {
+                                "id": 36390,
+                                "code": "C55",
+                                "name": "Morfologia krwi, z pełnym różnicowaniem granulocytów"
+                            }
+                        }
+                    ],
+                    "Biochemistry": [
+                        {
+                            "id": 47144152,
+                            "icd": {
+                                "id": 36718,
+                                "code": "M37",
+                                "name": "Kreatynina"
+                            }
+                        },
+                        {
+                            "id": 47144153,
+                            "icd": {
+                                "id": 36756,
+                                "code": "N13",
+                                "name": "Mocznik"
+                            }
+                        },
+                        {
+                            "id": 47105780,
+                            "icd": {
+                                "id": 36718,
+                                "code": "M37",
+                                "name": "Kreatynina"
+                            }
+                        },
+                        {
+                            "id": 47105779,
+                            "icd": {
+                                "id": 36584,
+                                "code": "I81",
+                                "name": "Białko C-reaktywne (CRP)"
+                            }
+                        }
+                    ],
+                    "Coagulation": [
+                        {
+                            "id": 47105782,
+                            "icd": {
+                                "id": 36502,
+                                "code": "G11",
+                                "name": "Czas częściowej tromboplastyny po aktywacji (APTT)"
+                            }
+                        },
+                        {
+                            "id": 47105783,
+                            "icd": {
+                                "id": 36487,
+                                "code": "G21",
+                                "name": "Czas protrombinowy (PT)"
+                            }
+                        }
+                    ],
+                    "Virology": [
+                        {
+                            "id": 47105786,
+                            "icd": {
+                                "id": 37147,
+                                "code": "V39",
+                                "name": "Wirus zapalenia wątroby typu B HBs Antygen"
+                            }
+                        }
+                    ]
+                }
+            },
+            "new diagnoza": "text",
+            "next level": {},
+            "nowa ze szczegolami": {}
+        }
+    },
+  {
+        "Stay_ID": 11,
+        "Patient_Status": "Discharged",
+        "Medical_Record": {
+            "Surgical_Interventions": {
+                "Major_Surgeries": [
+                    {
+                        "id": 47184106,
+                        "icd": {
+                            "id": 32662,
+                            "code": "68.61",
+                            "name": "Zmodyfikowane radykalne wycięcie macicy"
+                        }
+                    },
+                    {
+                        "id": 47183640,
+                        "icd": {
+                            "id": 32662,
+                            "code": "68.61",
+                            "name": "Zmodyfikowane radykalne wycięcie macicy"
+                        }
+                    },
+                    {
+                        "id": 1,
+                        "icd": {
+                            "id": "DAS",
+                            "code": "ADASDDAS",
+                            "name": "ADASD"
+                        }
+                    }
+                ]
+            },
+            "Diagnostics": {
+                "Pathology_Reports": [
+                    {
+                        "id": 47449454,
+                        "icd": {
+                            "id": 37299,
+                            "code": "Y90",
+                            "name": "Badanie histopatologiczne"
+                        }
+                    },
+                    {
+                        "id": 47449455,
+                        "icd": {
+                            "id": 37299,
+                            "code": "Y90",
+                            "name": "Badanie histopatologiczne"
+                        }
+                    },
+                    {
+                        "id": 47180705,
+                        "icd": {
+                            "id": 37299,
+                            "code": "Y90",
+                            "name": "Badanie histopatologiczne"
+                        }
+                    }
+                ],
+                "Imaging": {
+                    "X_Ray": [
+                        {
+                            "id": 47183648,
+                            "icd": {
+                                "id": 36275,
+                                "code": "87.440",
+                                "name": "RTG klatki piersiowej"
+                            }
+                        },
+                        {
+                            "id": 47144306,
+                            "icd": {
+                                "id": 36275,
+                                "code": "87.440",
+                                "name": "RTG klatki piersiowej"
+                            }
+                        }
+                    ]
+                },
+                "Laboratory_Tests": {
+                    "Hematology": [
+                        {
+                            "id": 47164548,
+                            "icd": {
+                                "id": 36390,
+                                "code": "C55",
+                                "name": "Morfologia krwi, z pełnym różnicowaniem granulocytów"
+                            }
+                        },
+                        {
+                            "id": 47205222,
+                            "icd": {
+                                "id": 36390,
+                                "code": "C55",
+                                "name": "Morfologia krwi, z pełnym różnicowaniem granulocytów"
+                            }
+                        },
+                        {
+                            "id": 47187736,
+                            "icd": {
+                                "id": 36390,
+                                "code": "C55",
+                                "name": "Morfologia krwi, z pełnym różnicowaniem granulocytów"
+                            }
+                        },
+                        {
+                            "id": 47183644,
+                            "icd": {
+                                "id": 36390,
+                                "code": "C55",
+                                "name": "Morfologia krwi, z pełnym różnicowaniem granulocytów"
+                            }
+                        },
+                        {
+                            "id": 47105777,
+                            "icd": {
+                                "id": 36390,
+                                "code": "C55",
+                                "name": "Morfologia krwi, z pełnym różnicowaniem granulocytów"
+                            }
+                        }
+                    ],
+                    "Biochemistry": [
+                        {
+                            "id": 47144152,
+                            "icd": {
+                                "id": 36718,
+                                "code": "M37",
+                                "name": "Kreatynina"
+                            }
+                        },
+                        {
+                            "id": 47144153,
+                            "icd": {
+                                "id": 36756,
+                                "code": "N13",
+                                "name": "Mocznik"
+                            }
+                        },
+                        {
+                            "id": 47105780,
+                            "icd": {
+                                "id": 36718,
+                                "code": "M37",
+                                "name": "Kreatynina"
+                            }
+                        },
+                        {
+                            "id": 47105779,
+                            "icd": {
+                                "id": 36584,
+                                "code": "I81",
+                                "name": "Białko C-reaktywne (CRP)"
+                            }
+                        }
+                    ],
+                    "Coagulation": [
+                        {
+                            "id": 47105782,
+                            "icd": {
+                                "id": 36502,
+                                "code": "G11",
+                                "name": "Czas częściowej tromboplastyny po aktywacji (APTT)"
+                            }
+                        },
+                        {
+                            "id": 47105783,
+                            "icd": {
+                                "id": 36487,
+                                "code": "G21",
+                                "name": "Czas protrombinowy (PT)"
+                            }
+                        }
+                    ],
+                    "Virology": [
+                        {
+                            "id": 47105786,
+                            "icd": {
+                                "id": 37147,
+                                "code": "V39",
+                                "name": "Wirus zapalenia wątroby typu B HBs Antygen"
+                            }
+                        }
+                    ]
+                }
+            },
+            "new diagnoza": "text",
+            "next level": {},
+            "nowa ze szczegolami": {}
+        }
+    },
     {
         "Stay_ID": 7279928,
         "Patient_Status": "Discharged",
