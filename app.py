@@ -268,7 +268,6 @@ def add_global_column():
     default_val = request.form.get('default_value', '')
 
     if new_col:
-        # Update ALL documents in the collection
         collection.update_many({}, {"$set": {new_col: default_val}})
         flash(f"Column '{new_col}' added to all records.", "success")
 
